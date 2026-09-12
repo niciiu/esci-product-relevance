@@ -15,6 +15,7 @@ caller (scripts/run_main_experiment.py) is responsible for that separation.
 
 from __future__ import annotations
 
+import inspect
 from pathlib import Path
 from typing import Sequence
 
@@ -215,6 +216,9 @@ class TransformerClassifier:
         elif resume_from_checkpoint:
             print("[semantic] no complete checkpoint found; starting training from scratch.")
 
+        accepted_params = set(inspect.signature(TrainingArguments.__init__).parameters)
+        strategy_kwarg = "eval_strategy" if "eval_strategy" in accepted_params else "evaluation_strategy"
+
         training_args = TrainingArguments(
             output_dir=str(output_path),
             num_train_epochs=self.epochs,
@@ -223,7 +227,6 @@ class TransformerClassifier:
             learning_rate=self.learning_rate,
             weight_decay=self.weight_decay,
             warmup_ratio=self.warmup_ratio,
-            evaluation_strategy="steps",
             eval_steps=self.checkpoint_save_steps,
             save_strategy="steps",
             save_steps=self.checkpoint_save_steps,
@@ -236,6 +239,7 @@ class TransformerClassifier:
             data_seed=self.seed,
             report_to=[],
             disable_tqdm=False,
+            **{strategy_kwarg: "steps"},
         )
 
         trainer = Trainer(
