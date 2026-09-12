@@ -1,0 +1,22 @@
+# Core data handling
+pandas>=2.0
+pyarrow>=14.0
+
+# Lexical arm
+scikit-learn>=1.3
+scipy>=1.11
+joblib>=1.3
+
+# Semantic arm (DeBERTa-v3-base)
+# NOTE: torch is intentionally NOT pinned/listed here — Colab already ships a
+# CUDA-enabled torch build, and `pip install torch` can silently replace it
+# with an incompatible CPU/CUDA-mismatched wheel. Only install torch yourself
+# if you are NOT running on Colab.
+transformers==4.44.2
+accelerate>=0.33
+sentencepiece>=0.2.0      # required by the DeBERTa-v3 tokenizer
+protobuf>=3.20,<5
+
+# Config
+pyyaml>=6.0
+matplotlib>=3.7   # for loss curve + confusion matrix heatmap in the sempro notebook

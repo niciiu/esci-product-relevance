@@ -1,0 +1,17 @@
+arm: semantic
+experiment_name: semantic_deberta_pilot_development
+data:
+  sample_size: 5000
+  training_size: 4500
+  validation_size: 500
+  seed: 42
+model:
+  type: transformer
+  checkpoint: microsoft/deberta-v3-base
+  max_sequence_length: 128
+  learning_rate: 2.0e-5
+  batch_size: 16
+  epochs: 5
+  early_stopping_patience: 2
+  checkpoint_save_steps: 100
+  progress_report_steps: 25

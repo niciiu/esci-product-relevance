@@ -1,0 +1,61 @@
+experiment_name: main_experiment
+
+# ---------------------------------------------------------------------------
+# Data scope (locked, per proposal methodology):
+#   - product_locale == "us", large_version == 1 only
+#   - official split column is used as-is (no manual re-splitting)
+#   - only query + product_title + esci_label are used by any model
+#     (product_description / product_bullet_point are never read)
+# ---------------------------------------------------------------------------
+data:
+  product_locale: us
+  large_version: 1
+  seed: 42
+  official_train_rows: 1393063
+  official_test_rows: 425762
+  train_subset_rows: 100000
+  test_subset_rows: 30551
+  training_rows: 90000
+  validation_rows: 10000
+
+splits:
+  training_file: esci_english_us_training_90000.parquet
+  validation_file: esci_english_us_validation_10000.parquet
+  test_file: esci_english_us_test_30551.parquet
+
+evaluation:
+  primary_metrics: [macro_f1, weighted_f1]
+  secondary_metrics: [accuracy, micro_f1]
+  labels: [E, S, C, I]
+
+# ---------------------------------------------------------------------------
+# Experiments actually reported in the thesis:
+#   - two lexical variants (TF-IDF + Linear SVM)
+#   - ONE semantic variant: DeBERTa-v3-base only
+#     (BERT-base and RoBERTa-base were dropped per pembimbing's feedback)
+# ---------------------------------------------------------------------------
+experiments:
+  lexical_separate:
+    arm: lexical
+    strategy: separate
+    max_features: 20000
+    ngram_range: [1, 2]
+    C: 1.0
+
+  lexical_concatenated:
+    arm: lexical
+    strategy: concatenated
+    max_features: 20000
+    ngram_range: [1, 2]
+    C: 1.0
+
+  semantic_deberta:
+    arm: semantic
+    checkpoint: microsoft/deberta-v3-base
+    max_sequence_length: 128
+    learning_rate: 2.0e-5
+    batch_size: 16
+    max_epochs: 10
+    early_stopping_patience: 2
+    checkpoint_save_steps: 500
+    progress_report_steps: 50

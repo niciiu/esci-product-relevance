@@ -1,0 +1,14 @@
+arm: lexical
+experiment_name: lexical_separate_pilot_development
+data:
+  data_dir: data/processed
+  sample_size: 5000
+  seed: 42
+tfidf:
+  strategy: separate
+  max_features: 20000
+  ngram_range: [1, 2]
+model:
+  type: linear_svm
+  C: 1.0
+output_dir: outputs/pilot_lexical
